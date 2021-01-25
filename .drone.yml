@@ -1,0 +1,19 @@
+---
+kind: pipeline
+type: kubernetes
+name: firebase_deploy
+
+trigger:
+  branch:
+    - main
+
+steps:
+  - name: firebase_deploy
+    image: node:12-alpine
+    commands:
+      - yarn --cwd ./functions install
+      - yarn global add firebase-tools
+      - firebase deploy --only functions --token $FIREBASE_TOKEN
+    environment:
+      FIREBASE_TOKEN:
+        from_secret: FIREBASE_TOKEN
